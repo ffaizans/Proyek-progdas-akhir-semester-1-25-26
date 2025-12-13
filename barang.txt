@@ -1,0 +1,16 @@
+1 ; Indomie Goreng Original ; 3500 ; 200 ; Indomie goreng rasa original ; GORENG
+2 ; Indomie Goreng Rendang ; 4000 ; 150 ; Indomie goreng rasa rendang ; GORENG
+3 ; Indomie Goreng Soto ; 3800 ; 180 ; Indomie goreng rasa soto ; GORENG
+4 ; Indomie Goreng Cabe Ijo ; 4000 ; 120 ; Indomie goreng pedas cabe ijo ; GORENG
+5 ; Indomie Goreng Ayam Panggang ; 4200 ; 100 ; Indomie goreng rasa ayam panggang ; GORENG
+6 ; Indomie Soto ; 3500 ; 230 ; Indomie kuah rasa soto ayam ; KUAH
+7 ; Indomie Ayam Bawang ; 3200 ; 250 ; Indomie kuah rasa ayam bawang ; KUAH
+8 ; Indomie Kari Ayam ; 3800 ; 170 ; Indomie kuah rasa kari ayam ; KUAH
+9 ; Indomie Kaldu Ayam ; 3500 ; 200 ; Indomie kuah rasa kaldu ayam ; KUAH
+10 ; Indomie Rasa Soto Banjar ; 4000 ; 130 ; Indomie kuah rasa soto banjar special ; KUAH
+11 ; Indomie Mi Goreng Aceh ; 5500 ; 80 ; Indomie mi goreng Aceh level pedas ; SPECIAL
+12 ; Indomie Mi Goreng Sate ; 5200 ; 90 ; Indomie mi goreng rasa sate padang ; SPECIAL
+13 ; Indomie Mi Goreng Iga Penyet ; 5800 ; 70 ; Indomie mi goreng rasa iga penyet ; SPECIAL
+14 ; Paket Komplit 10 Indomie ; 35000 ; 100 ; Paket 10 mie berbagai rasa ; PAKET
+15 ; Paket Goreng 5 Varian ; 19000 ; 80 ; 5 bungkus indomie goreng ; PAKET
+16 ; Paket Kuah 5 Varian ; 17000 ; 88 ; 5 bungkus indomie kuah ; PAKET
