@@ -48,8 +48,7 @@ private:
 
 public:
     AplikasiToko() : sudahLogin(false) {
-        cout << "TOKO INDOMIE         " << endl;
-        cout << "Jual Berbagai Macam Indomie Lengkap   " << endl;
+        cout << "\n ===== TOKO INDOMIE =====" << endl;
         
         if (!loadData()) {
             cout << "\n PROGRAM DIHENTIKAN" << endl;
@@ -464,4 +463,5 @@ int main() {
     AplikasiToko app;
     app.jalankan();
     return 0;
+
 }
