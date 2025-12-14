@@ -12,25 +12,95 @@
 using namespace std;
 
 // ============================
-// STRUCT DAN CLASS
+// CLASS DEFINITIONS
 // ============================
 
-struct User {
+class User {
+private:
     string username;
     string password;
     string role; // "pembeli" atau "penjual"
     string nama;
     string alamat;
     string noTelp;
+
+public:
+    // Constructor
+    User() {}
+    
+    User(string uname, string pass, string r, string nm, string almt, string telp) :
+        username(uname), password(pass), role(r), nama(nm), alamat(almt), noTelp(telp) {}
+
+    // Getter methods
+    string getUsername() const { return username; }
+    string getPassword() const { return password; }
+    string getRole() const { return role; }
+    string getNama() const { return nama; }
+    string getAlamat() const { return alamat; }
+    string getNoTelp() const { return noTelp; }
+
+    // Setter methods
+    void setUsername(string uname) { username = uname; }
+    void setPassword(string pass) { password = pass; }
+    void setRole(string r) { role = r; }
+    void setNama(string nm) { nama = nm; }
+    void setAlamat(string almt) { alamat = almt; }
+    void setNoTelp(string telp) { noTelp = telp; }
+
+    // Method untuk mengupdate semua data sekaligus (mirip dengan assignment struct)
+    void updateData(string nm, string almt, string telp) {
+        nama = nm;
+        alamat = almt;
+        noTelp = telp;
+    }
 };
 
-struct Barang {
+class Barang {
+private:
     int id;
     string nama;
     double harga;
     int stok;
     string deskripsi;
     string kategori;
+
+public:
+    // Constructor
+    Barang() : id(0), harga(0.0), stok(0) {}
+    
+    Barang(int i, string nm, double hrg, int stk, string desc, string kat) :
+        id(i), nama(nm), harga(hrg), stok(stk), deskripsi(desc), kategori(kat) {}
+
+    // Getter methods
+    int getId() const { return id; }
+    string getNama() const { return nama; }
+    double getHarga() const { return harga; }
+    int getStok() const { return stok; }
+    string getDeskripsi() const { return deskripsi; }
+    string getKategori() const { return kategori; }
+
+    // Setter methods
+    void setId(int i) { id = i; }
+    void setNama(string nm) { nama = nm; }
+    void setHarga(double hrg) { harga = hrg; }
+    void setStok(int stk) { stok = stk; }
+    void setDeskripsi(string desc) { deskripsi = desc; }
+    void setKategori(string kat) { kategori = kat; }
+
+    // Method untuk mengurangi stok
+    void kurangiStok(int jumlah) { stok -= jumlah; }
+    
+    // Method untuk menambah stok
+    void tambahStok(int jumlah) { stok += jumlah; }
+    
+    // Method untuk update semua data sekaligus
+    void updateData(string nm, double hrg, int stk, string desc, string kat) {
+        nama = nm;
+        harga = hrg;
+        stok = stk;
+        deskripsi = desc;
+        kategori = kat;
+    }
 };
 
 class AplikasiToko {
@@ -62,7 +132,6 @@ public:
         }
     }
 
-
     // LOAD DATA - HANYA BACA DARI FILE
     bool loadData() {
         // 1. Cek file default ada?
@@ -76,9 +145,9 @@ public:
         // 2. Load users (jika ada)
         ifstream userIn(USER_FILE);
         if (userIn.is_open()) {
-            User u;
-            while (userIn >> u.username >> u.password >> u.role 
-                   >> u.nama >> u.alamat >> u.noTelp) {
+            string username, password, role, nama, alamat, noTelp;
+            while (userIn >> username >> password >> role >> nama >> alamat >> noTelp) {
+                User u(username, password, role, nama, alamat, noTelp);
                 users.push_back(u);
             }
             userIn.close();
@@ -108,7 +177,6 @@ public:
             }
             
             // Parse line: ID ; Nama ; Harga ; Stok ; Deskripsi ; Kategori
-            Barang b;
             stringstream ss(line);
             string token;
             vector<string> tokens;
@@ -123,13 +191,14 @@ public:
             // Harus ada minimal 6 field
             if (tokens.size() >= 6) {
                 try {
-                    b.id = stoi(tokens[0]);
-                    b.nama = tokens[1];
-                    b.harga = stod(tokens[2]);
-                    b.stok = stoi(tokens[3]);
-                    b.deskripsi = tokens[4];
-                    b.kategori = tokens[5];
+                    int id = stoi(tokens[0]);
+                    string nama = tokens[1];
+                    double harga = stod(tokens[2]);
+                    int stok = stoi(tokens[3]);
+                    string deskripsi = tokens[4];
+                    string kategori = tokens[5];
                     
+                    Barang b(id, nama, harga, stok, deskripsi, kategori);
                     katalog.push_back(b);
                 } catch (...) {
                     cout << "  Baris " << lineNum << " format salah: " << line << endl;
@@ -156,18 +225,18 @@ public:
     void saveBarangToFile() {
         ofstream barangOut(BARANG_FILE);
         for (const auto& b : katalog) {
-            barangOut << b.id << " ; " << b.nama << " ; " << b.harga 
-                      << " ; " << b.stok << " ; " << b.deskripsi 
-                      << " ; " << b.kategori << endl;
+            barangOut << b.getId() << " ; " << b.getNama() << " ; " << b.getHarga() 
+                      << " ; " << b.getStok() << " ; " << b.getDeskripsi() 
+                      << " ; " << b.getKategori() << endl;
         }
         barangOut.close();
         
         // Juga update file default (untuk sync)
         ofstream defaultOut(BARANG_DEFAULT);
         for (const auto& b : katalog) {
-            defaultOut << b.id << " ; " << b.nama << " ; " << b.harga 
-                       << " ; " << b.stok << " ; " << b.deskripsi 
-                       << " ; " << b.kategori << endl;
+            defaultOut << b.getId() << " ; " << b.getNama() << " ; " << b.getHarga() 
+                       << " ; " << b.getStok() << " ; " << b.getDeskripsi() 
+                       << " ; " << b.getKategori() << endl;
         }
         defaultOut.close();
     }
@@ -176,8 +245,8 @@ public:
         // Save users
         ofstream userOut(USER_FILE);
         for (const auto& u : users) {
-            userOut << u.username << " " << u.password << " " << u.role << " "
-                    << u.nama << " " << u.alamat << " " << u.noTelp << endl;
+            userOut << u.getUsername() << " " << u.getPassword() << " " << u.getRole() << " "
+                    << u.getNama() << " " << u.getAlamat() << " " << u.getNoTelp() << endl;
         }
         userOut.close();
 
@@ -193,15 +262,17 @@ public:
 
     // AUTHENTICATION
     void registrasi() {
-        User baru;
         cout << "\n REGISTRASI " << endl;
-        cout << "Username: "; cin >> baru.username;
-        cout << "Password: "; cin >> baru.password;
-        cout << "Role (pembeli/penjual): "; cin >> baru.role;
-        cout << "Nama Lengkap: "; cin.ignore(); getline(cin, baru.nama);
-        cout << "Alamat: "; getline(cin, baru.alamat);
-        cout << "No. Telepon: "; getline(cin, baru.noTelp);
+        
+        string username, password, role, nama, alamat, noTelp;
+        cout << "Username: "; cin >> username;
+        cout << "Password: "; cin >> password;
+        cout << "Role (pembeli/penjual): "; cin >> role;
+        cout << "Nama Lengkap: "; cin.ignore(); getline(cin, nama);
+        cout << "Alamat: "; getline(cin, alamat);
+        cout << "No. Telepon: "; getline(cin, noTelp);
 
+        User baru(username, password, role, nama, alamat, noTelp);
         users.push_back(baru);
         saveData();
         cout << " Registrasi berhasil!" << endl;
@@ -214,10 +285,10 @@ public:
         cout << "Password: "; cin >> password;
 
         for (const auto& u : users) {
-            if (u.username == username && u.password == password) {
+            if (u.getUsername() == username && u.getPassword() == password) {
                 userAktif = u;
                 sudahLogin = true;
-                cout << " Login berhasil sebagai " << u.role << "!" << endl;
+                cout << " Login berhasil sebagai " << u.getRole() << "!" << endl;
                 return true;
             }
         }
@@ -244,14 +315,14 @@ public:
         cout << string(70, '=') << endl;
         
         for (const auto& b : katalog) {
-            string nama = b.nama;
+            string nama = b.getNama();
             if (nama.length() > 28) nama = nama.substr(0, 25) + "...";
             
-            cout << left << setw(5) << b.id 
+            cout << left << setw(5) << b.getId() 
                  << setw(30) << nama
-                 << "Rp" << setw(8) << fixed << setprecision(0) << b.harga
-                 << setw(8) << b.stok
-                 << b.kategori << endl;
+                 << "Rp" << setw(8) << fixed << setprecision(0) << b.getHarga()
+                 << setw(8) << b.getStok()
+                 << b.getKategori() << endl;
         }
         cout << string(70, '=') << endl;
         cout << " Total: " << katalog.size() << " varian" << endl;
@@ -285,11 +356,11 @@ public:
         cout << "Jumlah: "; cin >> jumlah;
 
         for (auto& b : katalog) {
-            if (b.id == id) {
-                if (b.stok >= jumlah) {
-                    double total = b.harga * jumlah;
+            if (b.getId() == id) {
+                if (b.getStok() >= jumlah) {
+                    double total = b.getHarga() * jumlah;
                     cout << "\n CHECKOUT " << endl;
-                    cout << "Barang: " << b.nama << endl;
+                    cout << "Barang: " << b.getNama() << endl;
                     cout << "Total: Rp" << fixed << setprecision(0) << total << endl;
                     
                     cout << "\nMetode pembayaran: ";
@@ -298,12 +369,12 @@ public:
                     
                     cout << " Pembayaran berhasil!" << endl;
                     
-                    b.stok -= jumlah;
+                    b.kurangiStok(jumlah);
                     saveData();
                     
                     // Log
                     ofstream out(OUTPUT_FILE, ios::app);
-                    out << userAktif.username << " beli " << jumlah << " " << b.nama << endl;
+                    out << userAktif.getUsername() << " beli " << jumlah << " " << b.getNama() << endl;
                     out.close();
                     
                 } else {
@@ -317,12 +388,18 @@ public:
 
     void editProfil() {
         cout << "\n EDIT PROFIL " << endl;
-        cout << "Nama baru: "; cin.ignore(); getline(cin, userAktif.nama);
-        cout << "Alamat baru: "; getline(cin, userAktif.alamat);
-        cout << "No. Telepon baru: "; getline(cin, userAktif.noTelp);
+        
+        string nama, alamat, noTelp;
+        cout << "Nama baru: "; cin.ignore(); getline(cin, nama);
+        cout << "Alamat baru: "; getline(cin, alamat);
+        cout << "No. Telepon baru: "; getline(cin, noTelp);
 
+        // Update user aktif
+        userAktif.updateData(nama, alamat, noTelp);
+
+        // Update di vector users
         for (auto& u : users) {
-            if (u.username == userAktif.username) {
+            if (u.getUsername() == userAktif.getUsername()) {
                 u = userAktif;
                 break;
             }
@@ -357,23 +434,29 @@ public:
     }
 
     void tambahBarang() {
-        Barang baru;
         cout << "\n TAMBAH BARANG " << endl;
-        cout << "ID: "; cin >> baru.id;
+        
+        int id;
+        cout << "ID: "; cin >> id;
         
         for (const auto& b : katalog) {
-            if (b.id == baru.id) {
+            if (b.getId() == id) {
                 cout << " ID sudah digunakan!" << endl;
                 return;
             }
         }
         
-        cout << "Nama: "; cin.ignore(); getline(cin, baru.nama);
-        cout << "Harga: "; cin >> baru.harga;
-        cout << "Stok: "; cin >> baru.stok;
-        cout << "Deskripsi: "; cin.ignore(); getline(cin, baru.deskripsi);
-        cout << "Kategori: "; getline(cin, baru.kategori);
+        string nama, deskripsi, kategori;
+        double harga;
+        int stok;
+        
+        cout << "Nama: "; cin.ignore(); getline(cin, nama);
+        cout << "Harga: "; cin >> harga;
+        cout << "Stok: "; cin >> stok;
+        cout << "Deskripsi: "; cin.ignore(); getline(cin, deskripsi);
+        cout << "Kategori: "; getline(cin, kategori);
 
+        Barang baru(id, nama, harga, stok, deskripsi, kategori);
         katalog.push_back(baru);
         saveData();
         cout << " Barang berhasil ditambahkan!" << endl;
@@ -385,13 +468,18 @@ public:
         cout << "\nMasukkan ID barang yang akan diedit: "; cin >> id;
 
         for (auto& b : katalog) {
-            if (b.id == id) {
-                cout << "Nama baru: "; cin.ignore(); getline(cin, b.nama);
-                cout << "Harga baru: "; cin >> b.harga;
-                cout << "Stok baru: "; cin >> b.stok;
-                cout << "Deskripsi baru: "; cin.ignore(); getline(cin, b.deskripsi);
-                cout << "Kategori baru: "; getline(cin, b.kategori);
+            if (b.getId() == id) {
+                string nama, deskripsi, kategori;
+                double harga;
+                int stok;
                 
+                cout << "Nama baru: "; cin.ignore(); getline(cin, nama);
+                cout << "Harga baru: "; cin >> harga;
+                cout << "Stok baru: "; cin >> stok;
+                cout << "Deskripsi baru: "; cin.ignore(); getline(cin, deskripsi);
+                cout << "Kategori baru: "; getline(cin, kategori);
+                
+                b.updateData(nama, harga, stok, deskripsi, kategori);
                 saveData();
                 cout << " Barang berhasil diupdate!" << endl;
                 return;
@@ -407,10 +495,10 @@ public:
         cout << "Jumlah tambahan: "; cin >> tambahan;
 
         for (auto& b : katalog) {
-            if (b.id == id) {
-                b.stok += tambahan;
+            if (b.getId() == id) {
+                b.tambahStok(tambahan);
                 saveData();
-                cout << " Stok berhasil diupdate: " << b.stok << endl;
+                cout << " Stok berhasil diupdate: " << b.getStok() << endl;
                 return;
             }
         }
@@ -423,7 +511,7 @@ public:
         cout << "\nMasukkan ID barang yang akan dihapus: "; cin >> id;
 
         for (auto it = katalog.begin(); it != katalog.end(); ++it) {
-            if (it->id == id) {
+            if (it->getId() == id) {
                 katalog.erase(it);
                 saveData();
                 cout << " Barang berhasil dihapus!" << endl;
@@ -446,8 +534,8 @@ public:
             switch (pilihan) {
                 case 1: 
                     if (login()) {
-                        if (userAktif.role == "pembeli") menuPembeli();
-                        else if (userAktif.role == "penjual") menuPenjual();
+                        if (userAktif.getRole() == "pembeli") menuPembeli();
+                        else if (userAktif.getRole() == "penjual") menuPenjual();
                     }
                     break;
                 case 2: registrasi(); break;
@@ -463,5 +551,4 @@ int main() {
     AplikasiToko app;
     app.jalankan();
     return 0;
-
 }
